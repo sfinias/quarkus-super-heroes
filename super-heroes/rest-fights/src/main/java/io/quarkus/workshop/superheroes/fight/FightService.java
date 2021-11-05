@@ -1,5 +1,9 @@
 package io.quarkus.workshop.superheroes.fight;
 
+import io.quarkus.workshop.superheroes.fight.client.Hero;
+import io.quarkus.workshop.superheroes.fight.client.HeroProxy;
+import io.quarkus.workshop.superheroes.fight.client.Villain;
+import io.quarkus.workshop.superheroes.fight.client.VillainProxy;
 import java.time.Instant;
 import java.util.List;
 import java.util.Random;
@@ -7,6 +11,7 @@ import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
+import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 
 @ApplicationScoped
@@ -15,6 +20,12 @@ public class FightService {
 
     @Inject
     Logger logger;
+
+    @RestClient
+    HeroProxy heroProxy;
+
+    @RestClient
+    VillainProxy villainProxy;
 
     private final Random random = new Random();
 
@@ -29,8 +40,21 @@ public class FightService {
     }
 
     public Fighters findRandomFighters() {
-        // Will be implemented later
-        return null;
+
+        Fighters fighters = new Fighters();
+        fighters.hero = findRandomHero();
+        fighters.villain = findRandomVillain();
+        return fighters;
+    }
+
+    Villain findRandomVillain() {
+
+        return villainProxy.findRandomVillain();
+    }
+
+    Hero findRandomHero() {
+
+        return heroProxy.findRandomHero();
     }
 
     @Transactional(TxType.REQUIRED)
