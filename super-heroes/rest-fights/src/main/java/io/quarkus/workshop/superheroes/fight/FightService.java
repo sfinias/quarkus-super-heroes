@@ -12,6 +12,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.transaction.Transactional.TxType;
 import org.eclipse.microprofile.faulttolerance.Fallback;
+import org.eclipse.microprofile.reactive.messaging.Channel;
+import org.eclipse.microprofile.reactive.messaging.Emitter;
 import org.eclipse.microprofile.rest.client.inject.RestClient;
 import org.jboss.logging.Logger;
 
@@ -27,6 +29,9 @@ public class FightService {
 
     @RestClient
     VillainProxy villainProxy;
+
+    @Channel("fights")
+    Emitter<Fight> emitter;
 
     private final Random random = new Random();
 
@@ -101,6 +106,8 @@ public class FightService {
 
         fight.fightDate = Instant.now();
         fight.persist();
+
+        emitter.send(fight).toCompletableFuture().join();
 
         return fight;
     }
