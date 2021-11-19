@@ -14,6 +14,6 @@ public class PingFightResourceHealthCheck implements HealthCheck {
     public HealthCheckResponse call() {
 
         String response = fightResource.hello();
-        return HealthCheckResponse.named("Pind Fights REST Endpoint").withData("Response", response).up().build();
+        return HealthCheckResponse.named("Ping Fights REST Endpoint").withData("Response", response).up().build();
     }
 }
